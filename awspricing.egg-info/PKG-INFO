@@ -1,0 +1,76 @@
+Metadata-Version: 1.1
+Name: awspricing
+Version: 1.1.5
+Summary: An SDK for AWS(China) Pricing
+Home-page: https://github.com/shaneliuyx/awscnpricing
+Author: Shane Liu
+Author-email: shane_liuyx@hotmail.com
+License: apache2
+Description: ==========
+        awspricing
+        ==========
+        
+        A Python library for working with the `AWS (China) Price List API <http:://docs.amazonaws.cn/en_us/aws/latest/userguide/billing-and-payment.html>`_.
+        
+        Features:
+        
+        * Simple boto3-like interface
+        * Service-specific helpers (only EC2 and RDS thus far)
+        * Local caching support
+        
+        This library is modified based on https://github.com/lyft/awspricing.
+        
+        
+        Installation:
+        ------------
+        
+        .. code-block:: sh
+        
+            $ python setup.py biuld
+            $ python setup.py install
+        
+        
+        Usage
+        -----
+        
+        .. code-block:: python
+        
+            import awscnpricing
+            ec2_offer = awscnpricing.offer('AmazonEC2')
+        
+        
+            ec2_offer.search_skus(
+              instance_type='c4.large',
+              location='China (Beijing)',
+              operating_system='Linux',
+              )
+        
+            ec2_offer.reserved_hourly(
+              'r5.24xlarge',
+              operating_system='Linux',
+              lease_contract_length='1yr',
+              offering_class='standard',
+              purchase_option='All Upfront',
+              region='cn-north-1'
+              )
+            ec2_offer.reserved_upfront(
+              'r5.24xlarge',
+              operating_system='Linux',
+              lease_contract_length='1yr',
+              offering_class='standard',
+              purchase_option='All Upfront',
+              region='cn-north-1'
+              )
+        ..
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6

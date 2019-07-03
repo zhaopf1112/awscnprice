@@ -32,6 +32,7 @@ else:
 
 
 on_demand_price = []
+ri_price = []
 r_type = []
 r_vcpu = []
 r_location = []
@@ -82,6 +83,23 @@ for sku, data in ec2offer['products'].items():
                 )
             except:
                 a_price = "0"
+
+            try:
+                r_price = ec2_offer.reserved_hourly(
+                    ec2_type,
+                    operating_system=ec2_os,
+                    tenancy=data['attributes']['tenancy'],
+                    license_model=data['attributes']['licenseModel'],
+                    preinstalled_software=data['attributes']['preInstalledSw'],
+                    lease_contract_length=yr,
+                    offering_class=offering_class,
+                    purchase_option=p_option,
+                    region=ec2_region,
+                    capacity_status=data['attributes']['capacitystatus']
+                )
+            except:
+                r_price = "0"
+
             try:
                 o_price = ec2_offer.ondemand_hourly(
                     ec2_type,
@@ -95,6 +113,7 @@ for sku, data in ec2offer['products'].items():
             except:
                 o_price = "0"
             on_demand_price.append(o_price)
+            ri_price.append(r_price)
             r_type.append(ec2_type)
             r_vcpu.append(data['attributes']['vcpu'])
             r_location.append(site)
@@ -155,7 +174,7 @@ for sku, data in ec2offer['products'].items():
                     reserve_price['3yr_all'].append('0')
 
 df = pd.DataFrame({'type': r_type, 'vcpu': r_vcpu, 'memory': r_memory, 'location': r_location, "tenancy": r_tenancy, "os": r_operatingSystem,
-                   "all_upfront_price_1yr": reserve_price['1yr_all'], "partial_upfront_price_1yr": reserve_price['1yr_partial'], "no_upfront_price_1yr": reserve_price['1yr_no'], "all_upfront_price_3yr": reserve_price['3yr_all'], "partial_upfront_price_3yr": reserve_price['3yr_partial'], "no_upfront_price_3yr": reserve_price['3yr_no'], "on_demand_price": on_demand_price, 'capacity_status': r_capacity_status, 'preInstalledSw': r_preinstalled_software, 'license_model': r_license_model})
+                   "all_upfront_price_1yr": reserve_price['1yr_all'], "partial_upfront_price_1yr": reserve_price['1yr_partial'], "no_upfront_price_1yr": reserve_price['1yr_no'], "all_upfront_price_3yr": reserve_price['3yr_all'], "partial_upfront_price_3yr": reserve_price['3yr_partial'], "no_upfront_price_3yr": reserve_price['3yr_no'], "on_demand_price": on_demand_price, "ri_price": ri_price,'capacity_status': r_capacity_status, 'preInstalledSw': r_preinstalled_software, 'license_model': r_license_model})
 df[['vcpu', 'memory', 'all_upfront_price_1yr', 'partial_upfront_price_1yr', 'no_upfront_price_1yr', 'all_upfront_price_3yr', 'partial_upfront_price_3yr', 'no_upfront_price_3yr', 'on_demand_price']] = df[[
     'vcpu', 'memory', 'all_upfront_price_1yr', 'partial_upfront_price_1yr', 'no_upfront_price_1yr', 'all_upfront_price_3yr', 'partial_upfront_price_3yr', 'no_upfront_price_3yr', 'on_demand_price']].astype('float')
 df.drop_duplicates(subset=['type', 'vcpu', 'memory', 'location', 'tenancy', 'os', 'all_upfront_price_1yr', 'partial_upfront_price_1yr', 'no_upfront_price_1yr', 'all_upfront_price_3yr',
